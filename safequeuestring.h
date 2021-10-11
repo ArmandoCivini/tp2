@@ -1,5 +1,5 @@
-#ifndef SAFEQUEUESTRING
-#define SAFEQUEUESTRING
+#ifndef _SAFEQUEUESTRING_H
+#define _SAFEQUEUESTRING_H
 
 #include <queue>
 #include <mutex>
