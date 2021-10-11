@@ -12,7 +12,7 @@ private:
     int size;
     int terminators;
 public:
-    SafeQueueString(std::queue<char *>& q);
+    explicit SafeQueueString(std::queue<char *>& q);
     void setMutex(std::mutex *mu);
     void addTerminators(int cantidad);
     void push(char *dato);
@@ -26,6 +26,7 @@ SafeQueueString::SafeQueueString(std::queue<char *>& q)
 : cola(q){
     this->size =  0;
     this->terminators = 0;
+    this->m = NULL;
 }
 
 void SafeQueueString::setMutex(std::mutex *mu){

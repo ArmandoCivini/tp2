@@ -12,7 +12,7 @@ class File_parser
 private:
     std::ifstream file;
 public:
-    File_parser(const char *file);
+    explicit File_parser(const char *file);
     void read_n_char(char *buf, int n);
     void resetFile();
     ~File_parser();

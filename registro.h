@@ -33,6 +33,7 @@ Registro::Registro(){
     dato = 0;
     partes = 0;
     primer_num_flag = true;
+    this->m = NULL;
 }
 
 void Registro::reset(){

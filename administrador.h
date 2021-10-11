@@ -22,12 +22,14 @@ private:
     int workers;
     SafeQueueString *cola;
 public:
-    Administrador(int columnas, int workers, SafeQueueString *colaa, File_parser *parser);
+    Administrador
+    (int columnas, int workers, SafeQueueString *colaa, File_parser *parser);
     void operar(int start, int end, int max_rows);
     ~Administrador();
 };
 
-Administrador::Administrador(int columnas, int workers, SafeQueueString *colaa, File_parser *parser){
+Administrador::Administrador
+(int columnas, int workers, SafeQueueString *colaa, File_parser *parser){
     this->parser = parser;
     this->columnas = columnas;
     this->workers = workers;
@@ -81,7 +83,7 @@ void operar_linea
     char *op = strtok(NULL,  " ");
     op[strlen(op)-1] = '\0';
     admin.operar(atoi(start), atoi(end), atoi(rows));
-    Worker *trabajadores = (Worker *)malloc(sizeof(Worker)*workers);
+    Worker *trabajadores = static_cast<Worker*>(malloc(sizeof(Worker)*workers));
     for (int i = 0; i < workers; i++){
         Worker trabajador(atoi(columna), columnas, q, &registro);
         trabajadores[i] = trabajador;
@@ -95,7 +97,6 @@ void operar_linea
         registro.printDato();
     }
     free(trabajadores);
-    
 }
 
 #endif

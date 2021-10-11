@@ -8,6 +8,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <mutex>
+#include <algorithm>
 
 int sumar(int numero1, int numero2){
     return numero1 + numero2;
@@ -28,7 +29,6 @@ int max(int numero1, int numero2){
 class Worker
 {
 private:
-    std::mutex* m;
     SafeQueueString *cola;
     char *numeros;
     int columna;
@@ -47,7 +47,6 @@ public:
     (int columna, int numero_de_columnas
     , SafeQueueString *cola, Registro *reg);
     void work(char *operacion);
-    void setMutex(std::mutex* m);
     ~Worker();
 };
 
@@ -60,10 +59,9 @@ Worker::Worker
     this->cola = cola;
     this->numeros = NULL;
     this->registro = reg;
-}
-
-void Worker::setMutex(std::mutex* mu){
-    this->m = mu;
+    this->replace_flag = false;
+    this->max_flag = false;
+    this->len_numeros = 0;
 }
 
 void Worker::setNumeroLen(){
@@ -89,10 +87,9 @@ uint16_t Worker::siguiente_numero(){
 
 void Worker::process(int (*calculo)(int, int)){
     int resultado_actual = siguiente_numero();
-    int valor_a_procesar;
     int iteraciones = this->len_numeros / (2 * this->numero_de_columnas);
     for (int i = 0; i < iteraciones-1; i++){
-        valor_a_procesar = siguiente_numero();
+        int valor_a_procesar = siguiente_numero();
         resultado_actual = calculo(resultado_actual, valor_a_procesar);
     }
     if (this->replace_flag){
@@ -109,7 +106,7 @@ void Worker::process(int (*calculo)(int, int)){
 
 void Worker::organize(int (*calculo)(int, int)){
     int estado=0;
-    while(estado == 0){
+    while (estado == 0){
         free(this->numeros);
         this->numeros = cola->pop(&estado);
         if (this->numeros == NULL){
