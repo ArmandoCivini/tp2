@@ -21,9 +21,12 @@ int main(int argc, char *argv[]){
     Administrador admin(atoi(argv[2]), atoi(argv[3]), &q, &file);
     char *linea = NULL; 
     size_t len;
+
     while (getline(&linea, &len, stdin) != -1){
         operar_linea(linea, admin, m, &q, atoi(argv[3]), atoi(argv[2]));
     }
+    
+
     delete(m);
     free(linea);
     return 0;

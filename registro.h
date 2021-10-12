@@ -36,11 +36,6 @@ Registro::Registro(){
     this->m = NULL;
 }
 
-void Registro::reset(){
-    this->dato = 0;
-    this->partes = 0;
-}
-
 void Registro::setMutex(std::mutex *mu){
     this->m = mu;
 }
@@ -78,12 +73,11 @@ void Registro::addPartes(int add){
 }
 
 void Registro::printDato(){
-    std::cout <<  this->dato << std::endl;
+    printf("%d\n", this->dato);
 }
 
 void Registro::printDiv(){
-    std::cout <<  this->dato << "/" 
-    << this->partes << std::endl;
+    printf("%d/%d\n", this->dato, this->partes);
 }
 
 Registro::~Registro()

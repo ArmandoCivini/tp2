@@ -13,6 +13,8 @@
 #include <queue>
 #include <mutex>
 #include <list>
+#include <thread>
+#include <vector>
 
 class Administrador
 {
@@ -71,6 +73,14 @@ Administrador::~Administrador()
 {
 }
 
+void hilo_admin(Administrador &admin, int start, int end, int max_rows){
+    admin.operar(start, end, max_rows);
+}
+
+void hilo_worker(Worker &worker, char *op){
+    worker.work(op);
+}
+
 void operar_linea
 (char *linea, Administrador admin, std::mutex *m
 , SafeQueueString *q, int workers, int columnas){
@@ -82,14 +92,22 @@ void operar_linea
     char *columna = strtok(NULL,  " ");
     char *op = strtok(NULL,  " ");
     op[strlen(op)-1] = '\0';
-    admin.operar(atoi(start), atoi(end), atoi(rows));
+
+    std::thread hilo_particion 
+    (hilo_admin, std::ref(admin), atoi(start), atoi(end), atoi(rows));
+
     Worker *trabajadores = static_cast<Worker*>(malloc(sizeof(Worker)*workers));
+    std::vector<std::thread> hilos;
     for (int i = 0; i < workers; i++){
         Worker trabajador(atoi(columna), columnas, q, &registro);
         trabajadores[i] = trabajador;
     }
     for (int i = 0; i < workers; i++){
-        trabajadores[i].work(op);
+       hilos.push_back(std::thread(hilo_worker, std::ref(trabajadores[i]), op));
+    }
+    hilo_particion.join();
+    for (std::thread & hilo : hilos){
+        hilo.join();
     }
     if (strcmp(op, "mean")==0){
         registro.printDiv();
