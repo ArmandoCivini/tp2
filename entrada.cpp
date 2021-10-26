@@ -12,22 +12,29 @@
 #include <list>
 
 
+
 int main(int argc, char *argv[]){
-    std::mutex *m= new std::mutex;
-    std::queue<char *> a;
-    SafeQueueString q(a);
-    q.setMutex(m);
-    File_parser file(argv[1]);
-    Administrador admin(atoi(argv[2]), atoi(argv[3]), &q, &file);
-    char *linea = NULL; 
-    size_t len;
+    std::string columnas = argv[2];
+    std::string workers = argv[3];
+    try{
+        int columnas_num = std::stoi(columnas);
+        int workers_num = std::stoi(workers);
 
-    while (getline(&linea, &len, stdin) != -1){
-        operar_linea(linea, admin, m, &q, atoi(argv[3]), atoi(argv[2]));
+        Administrador admin(columnas_num, workers_num, argv[1]);
+        std::string linea;
+        while (std::getline(std::cin, linea)){
+            admin.operar_linea((char *)linea.c_str(), atoi(argv[3]), atoi(argv[2]));
+        }
+        admin.end();
+        return 0;
+    } catch (std::invalid_argument const &ex) {
+        std::cerr << "numero invalido" << '\n';
+        return 1;
+    } catch (std::out_of_range const &ex) {
+        std::cerr << "numero fuera de rango" << '\n';
+        return 1;
+    } catch (std::bad_alloc const &ex){
+        std::cerr << "falla en malloc" << '\n';
+        return 1;
     }
-    
-
-    delete(m);
-    free(linea);
-    return 0;
 }
