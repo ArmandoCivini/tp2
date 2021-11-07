@@ -40,19 +40,21 @@ void Registro::addPartes(int add){
 }
 
 void Registro::printDato(){
+    std::lock_guard<std::mutex> lock(m);
     printf("%d\n", this->dato);
 }
 
 void Registro::reset(){
+    std::lock_guard<std::mutex> lock(m);
     dato = 0;
     partes = 0;
     primer_num_flag = true;
 }
 
 void Registro::printDiv(){
+    std::lock_guard<std::mutex> lock(m);
     printf("%d/%d\n", this->dato, this->partes);
 }
 
-Registro::~Registro()
-{
+Registro::~Registro(){
 }

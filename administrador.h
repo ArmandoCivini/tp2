@@ -2,9 +2,9 @@
 #define _ADMINISTRADOR_H
 
 
-#include "worker.h"
-#include "file_parser.h"
-#include "safequeuestring.h"
+#include "trabajador.h"
+#include "lector.h"
+#include "colaindxsegura.h"
 #include "registro.h"
 #include <iostream>
 #include <fstream>
@@ -18,25 +18,24 @@
 #include <utility>
 #include <memory>
 #include <algorithm>
-
+#include <string>
 
 
 class Administrador
 {
 private:
-    char *file;
+    std::string file;
     int columnas;
-    int workers;
-    SafeQueueString cola;
+    int trabajadores_num;
+    ColaIndxSegura cola;
     Registro registro;
     std::vector<std::thread> hilos;
-    std::vector<std::unique_ptr<Worker>> trabajadores;
+    std::vector<Trabajador> trabajadores;
+    void operar(int start, int end, int max_rows, int columna, const std::string& op);
 public:
     Administrador
-    (int columnas, int workers, char *file);
-    void operar(int start, int end, int max_rows, int columna, char *op);
-    void operar_linea(char *linea, int workers, int columnas);
-    void end();
+    (int columnas, int Trabajadors, char *file);
+    void operarLinea(const std::string& linea, int Trabajadors, int columnas);
     ~Administrador();
 };
 
